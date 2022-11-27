@@ -1,8 +1,10 @@
 import { ApolloClient, InMemoryCache, ApolloProvider, HttpLink } from '@apollo/client';
-import LinkList from "./components/LinkList"
+import { Routes , Route } from "react-router-dom"
+import { Layout, LinkList, Login, Navbar, NewLink } from './components';
+
 
 const link = new HttpLink({
-  // uri : process.env.REACT_APP_GRAPHQL_ENDPOINT
+  uri : import.meta.env.VITE_GRAPHQL_ENDPOINT
 })
 
 const cache = new InMemoryCache()
@@ -14,12 +16,20 @@ const client = new ApolloClient({
 
 
 function App() {
-  console.log("env:" ,  import.meta.env.VITE_GRAPHQL_ENDPOINT)
+
 
   return (
     <ApolloProvider client={client}>
-      <div className="flex items-center justify-center h-screen w-screen">
-        <LinkList  />
+      <div className="h-screen w-screen overflow-x-hidden">
+       <Navbar />
+       <Routes>
+        <Route path='/' element={<Layout />}>
+         <Route index element={<LinkList />} />
+         <Route path='list' element= {<LinkList />}/> 
+         <Route path='newLink' element={<NewLink />} />
+         <Route path='login' element={<Login />} />
+        </Route>
+       </Routes> 
       </div>
     </ApolloProvider>
   )
