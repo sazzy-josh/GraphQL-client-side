@@ -22,7 +22,7 @@ const GET_ALL_LINK = gql`
 const LinkList = () => {
 
     const { data , loading , error } = useQuery(GET_ALL_LINK)
-    console.log(data)
+    // console.log(data)
     
     // ==================================================================================================
     // ALWAYS RETURN A LOADING STATE ELSE GRAPHQL QUERY WOULD RETURN AN ERROR BEFORE SERVER RETURNS DATA
