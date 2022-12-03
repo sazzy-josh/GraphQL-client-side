@@ -1,8 +1,11 @@
-import { NavLink } from "react-router-dom"
-
+import { NavLink , useNavigate} from "react-router-dom"
+import { AUTH_TOKEN } from "../constants"
 
 
 const Navbar = () => {
+  const navigate = useNavigate()
+ const AuthToken = localStorage.getItem(AUTH_TOKEN)
+
   return (
   <div className="w-full h-auto py-8 flex justify-center items-center gap-x-4">
     <div>
@@ -22,11 +25,16 @@ const Navbar = () => {
     </div>
 
     <div>
-     <NavLink to={'/login'}
+     {!AuthToken ? <NavLink to={'/login'}
       className={({ isActive }) => ( isActive ? 'font-bold text-blue-500 underline' : "")}
      >
        Login
-     </NavLink>
+     </NavLink> : <span
+         className="cursor-pointer"
+         onClick={() => {
+         localStorage.removeItem(AUTH_TOKEN);
+         navigate("/")
+     } }>Logout </span> }
     </div>
   </div>
   )

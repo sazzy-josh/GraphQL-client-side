@@ -4,7 +4,7 @@ import { Outlet } from "react-router-dom"
 
 const Layout = () => {
   return (
-    <div className='flex items-center justify-center h-full w-full'>
+    <div className='flex justify-center h-full w-full'>
         <Outlet/>
     </div>
   )
