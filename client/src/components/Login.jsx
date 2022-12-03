@@ -1,4 +1,4 @@
-import React, { useState }  from 'react'
+import React, { useState , useEffect }  from 'react'
 import { gql, useMutation } from '@apollo/client';
 import { AUTH_TOKEN } from '../constants';
 import { useNavigate } from 'react-router-dom';
@@ -21,6 +21,7 @@ const LOGIN = gql`
 `
 
 const Login = () => {
+
 const navigate = useNavigate()
 
   const [formDetails, setformDetails] = useState({
@@ -30,6 +31,23 @@ const navigate = useNavigate()
   });
 
   const [loginState , handleFormState] = useState(true)
+  const [showError , setShowError] = useState({
+    isError : false,
+    ErrorMessage : ""
+  })
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowError((prev) => {
+        console.log("useEffect ran")
+        return {
+         ...prev, 
+         isError : false
+        }
+       })  
+    },4000);
+    return () => clearTimeout(timer)
+  }, [showError.isError])
 
  const handleInputChange = (e) => {
     const { name , value } = e.target
@@ -43,8 +61,22 @@ const navigate = useNavigate()
       password : formDetails.password
     } ,
     onCompleted : ({login}) => {
-      localStorage.setItem(AUTH_TOKEN , login.token)
-       navigate("/")
+      setShowError((prev) => {
+       return {
+        ...prev, 
+        isError : false
+       }
+      });
+      localStorage.setItem(AUTH_TOKEN , login.token);
+      navigate("/")
+    },
+    onError : (error) => {
+      setShowError((prev) => {
+        return {
+         isError : true ,
+         ErrorMessage : error.message
+        }
+      })
     }
   })
 
@@ -57,12 +89,24 @@ const [ signup ] = useMutation(SIGN_UP , {
       email : formDetails.email,
       password : formDetails.password
     } ,
-    onCompleted : ({signup}) => {
-        handleFormState(prev => !prev);
-        console.log("Signed up succesfully" , signup.token)
+    onCompleted : ({signup}) => {    
+      handleFormState(prev => !prev);
+      setShowError((prev) => {
+        return {
+         ...prev, 
+         isError : false
+        }
+       }); 
+   
+       // console.log("Signed up succesfully" , signup.token)
     },
     onError : (error) => {
-       alert(error.message)
+      setShowError((prev) => {
+        return {
+         isError : true ,
+         ErrorMessage : error.message
+        }
+      })
     }
   })
  
@@ -80,6 +124,9 @@ const [ signup ] = useMutation(SIGN_UP , {
   return (
     <div className='w-screen flex flex-col items-center gap-y-4'>
      <h3 className='font-bold text-gray-600 text-2xl'>{loginState ? "LOGIN" : "SIGN UP"}</h3>
+     
+    <p className={`absolute right-2 top-0.5 lg:w-1/4 p-2 text-xl border rounded-md bg-red-300 text-slate-50 text-center ${showError.isError ? "translate-y-0" : "-translate-y-[50vh]"}`}>{showError.ErrorMessage}</p>
+      
       
       <form className='flex flex-col gap-y-2 lg:w-1/4' onSubmit={loginState ? handleLogin : handleSignUp }>
         { !loginState ? <input type="text" name='name' placeholder='Enter your name' className='border-2 rounded-md px-2 py-1 border-slate-200 focus:border-slate-200 !focus:outline-none  active:outline-none' value={formDetails.name} onChange={handleInputChange}/> : null}
