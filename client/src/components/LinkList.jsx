@@ -5,24 +5,33 @@ import List from './List'
 // ======================================
 // GET ALL LINK QUERY SCHEMA
 // ======================================
-const GET_ALL_LINK = gql`
+export const GET_ALL_LINK = gql`
   query getFeeds {
     feed {
+      id
+      links {
         id
-        links {
+        createdAt
+        url
+        description
+        postedBy {
           id
-          createdAt
-          url
-          description
+          name
         }
-      } 
+        votes {
+          id
+          user {
+            id
+          }
+        }
+      }
+    }
   }
 `
 
 const LinkList = () => {
 
     const { data , loading , error } = useQuery(GET_ALL_LINK)
-    // console.log(data)
     
     // ==================================================================================================
     // ALWAYS RETURN A LOADING STATE ELSE GRAPHQL QUERY WOULD RETURN AN ERROR BEFORE SERVER RETURNS DATA

@@ -12,11 +12,6 @@ const List = ({data}) => {
     <div>
      <a className='text-blue-300 underline' href={data?.url}>{data?.url}</a>
      <p>{data?.description}</p>
-     <p>
-      Posted {`${formatDistanceToNow(
-      new Date(data?.createdAt)
-     )} ` +"ago"}
-     </p>
      {authToken && (
         <div className='flex gap-x-1'>
           <div
@@ -26,8 +21,10 @@ const List = ({data}) => {
             ▲ {" "} <span className='text-blue-500'>Upvote</span> 
           </div> 
          <div>
-            | 5 votes | by{' '}
-            { 'Unknown'}{' '}</div>  
+            | {data?.votes?.length} {data?.votes?.length <= 1  ? "vote" : "votes"} | by{' '}
+            {data?.postedBy  ? data?.postedBy?.name  : 'Unknown' } {`${formatDistanceToNow(
+      new Date(data?.createdAt)
+     )} ` +"ago"}</div>  
         </div>
         )}
     </div>
