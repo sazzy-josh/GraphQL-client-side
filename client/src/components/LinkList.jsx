@@ -2,9 +2,9 @@ import { gql , useQuery } from '@apollo/client'
 import List from './List'
 
 
-// ======================================
+// ==========================================
 // GET ALL LINK QUERY SCHEMA
-// ======================================
+// ==========================================
 export const GET_ALL_LINK = gql`
   query getFeeds {
     feed {

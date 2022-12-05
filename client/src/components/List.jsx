@@ -1,12 +1,40 @@
 import React from 'react'
 import { formatDistanceToNow } from 'date-fns'
 import { AUTH_TOKEN } from '../constants';
+import { gql, useMutation } from '@apollo/client';
 
+
+const UPVOTE = gql`
+  mutation upvote($linkId : ID!){
+    vote(linkId: $linkId) {
+      id 
+      link{
+        id
+        votes{
+          id
+          user{
+            id
+            name
+            email
+          }
+        }
+      }
+      user{
+      id  
+      }
+    }
+  }
+`
 
 
 const List = ({data}) => {
   const authToken = localStorage.getItem(AUTH_TOKEN);
-  // console.log(new Date(data?.createdAt).toLocaleString())
+
+  const [vote] = useMutation(UPVOTE , {
+    variables : {
+      linkId : data?.id
+    }
+  })
   
   return (
     <div>
@@ -16,14 +44,14 @@ const List = ({data}) => {
         <div className='flex gap-x-1'>
           <div
             className="cursor-pointer"
-            onClick={() => {console.log("Clicked vote button")}}
+            onClick={() => { vote()}}
             >
             ▲ {" "} <span className='text-blue-500'>Upvote</span> 
           </div> 
          <div>
             | {data?.votes?.length} {data?.votes?.length <= 1  ? "vote" : "votes"} | by{' '}
             {data?.postedBy  ? data?.postedBy?.name  : 'Unknown' } {`${formatDistanceToNow(
-      new Date(data?.createdAt)
+             new Date(data?.createdAt)
      )} ` +"ago"}</div>  
         </div>
         )}
